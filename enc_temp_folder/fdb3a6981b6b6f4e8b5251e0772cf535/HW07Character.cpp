@@ -20,7 +20,7 @@ AHW07Character::AHW07Character()
     SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArmComp->SetupAttachment(CapsuleComp);
     SpringArmComp->TargetArmLength = 300.0f;
-    SpringArmComp->bUsePawnControlRotation = true;
+    SpringArmComp->bUsePawnControlRotation = false;
 
     CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
@@ -67,19 +67,23 @@ void AHW07Character::Move(const FInputActionValue & value)
 
     const FVector2D MoveInput = value.Get<FVector2D>();
 
-    if (!FMath::IsNearlyZero(MoveInput.X) || !FMath::IsNearlyZero(MoveInput.Y))
-    {
-        FRotator Rotation = GetActorRotation();
+ /*   if (!FMath::IsNearlyZero(MoveInput.X) || !FMath::IsNearlyZero(MoveInput.Y))
+    {*/
+        FRotator Rotation = HW07Cotroller->GetControlRotation();
         UE_LOG(LogTemp, Warning, TEXT("%s"), *Rotation.ToString());
 
         const FRotator YawRotation(0, Rotation.Yaw, 0);
-        const FVector Forward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        const FVector Right = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+        // get forward vector
+        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+        // get right vector 
+        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-        FVector MoveDirection = Forward * MoveInput.X + Right * MoveInput.Y;
+        // add movement 
+        AddMovementInput(ForwardDirection, MoveInput.Y);
+        AddMovementInput(RightDirection, MoveInput.X);
 
-        AddActorLocalOffset(MoveDirection.GetSafeNormal() * MoveSpeed * GetWorld()->GetDeltaSeconds(), true);
-    }
+        
+    //}
 }
 
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "HW07PlayerController.h"
 #include "HW07Character.generated.h"
 
 class UCapsuleComponent;
@@ -21,6 +22,7 @@ public:
 
 protected:
 
+	AHW07PlayerController* HW07Cotroller;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Component")
 	UCapsuleComponent* CapsuleComp;
